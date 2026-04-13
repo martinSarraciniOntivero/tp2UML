@@ -1,0 +1,29 @@
+import resolucion.*
+
+const  Armando = new Permanente(
+  nombre = "Armando",
+  sueldoBasico = 1000,
+  direccion = "Calle Falsa 123",
+  estadoCivil = true,
+  fechaNac = new Date(day = 30, month = 6, year = 1973),
+  cantHijos = 3,
+  antiguedad = 10
+)
+
+const  Lucia = new Temporario(
+  nombre = "Lucia",
+  sueldoBasico = 6000,
+  direccion = "Calle Verdadera 456",
+  estadoCivil = false,
+  fechaNac = new Date(day = 15, month = 4, year = 1989),
+    horasExtra = 20,
+  fechaDesign = new Date(day = 1, month = 1, year = 2010)
+)
+
+const Maconas = new Empresa(
+  nombre = "Maconas",
+  cuit = 30123456789,
+  empleados = [Armando, Lucia]
+)
+
+

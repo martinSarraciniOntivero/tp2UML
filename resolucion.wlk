@@ -2,6 +2,32 @@ class Empresa{
     const empleados 
     var property  nombre 
     var property cuit 
+    method montoTotalSueldosNeto(){
+        return empleados.sum({empleado => empleado.sueldoNeto()})
+    }
+    method montoTotalSueldosBruto(){
+        return empleados.sum({empleado => empleado.sueldoBruto()})
+    }
+    method montoTotalRetenciones(){
+        return empleados.sum({empleado => empleado.retenciones()})
+    }
+    method liquidacionPorEmpleado(){
+        return empleados.map({empleado => new ReciboDeHaberes(
+            nombreEmpleado = empleado.nombre(),
+            sueldoBruto = empleado.sueldoBruto(),
+            direccion = empleado.direccion(),
+            sueldoNeto = empleado.sueldoNeto(),
+            fechaEmision = new Date()
+        )})
+    }
+}
+
+class ReciboDeHaberes{
+    var property nombreEmpleado
+    var property sueldoBruto
+    var property direccion
+    var property fechaEmision  
+    var property sueldoNeto
 
 }
 
