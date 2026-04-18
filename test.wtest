@@ -1,6 +1,6 @@
 import resolucion.*
 
-const  Armando = new Permanente(
+const  armando = new Permanente(
   nombre = "Armando",
   sueldoBasico = 1000,
   direccion = "Calle Falsa 123",
@@ -10,7 +10,7 @@ const  Armando = new Permanente(
   antiguedad = 10
 )
 
-const  Lucia = new Temporario(
+const  lucia = new Temporario(
   nombre = "Lucia",
   sueldoBasico = 6000,
   direccion = "Calle Verdadera 456",
@@ -20,10 +20,20 @@ const  Lucia = new Temporario(
   fechaDesign = new Date(day = 1, month = 1, year = 2010)
 )
 
-const Maconas = new Empresa(
+const maconas = new Empresa(
   nombre = "Maconas",
   cuit = 30123456789,
-  empleados = [Armando, Lucia]
+  empleados = [armando, lucia]
 )
 
-
+describe "El sueldo neto de armando es: "{
+   test "Sueldo Neto"{
+        assert.equals(armando.sueldoNeto(), 1477.5)
+    }
+    test "Sueldo Bruto"{
+        assert.equals(armando.sueldoBruto(), 2050)
+    }
+    test "Retenciones"{
+        assert.equals(armando.retenciones(), 572.5)
+    }
+}
