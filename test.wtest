@@ -7,7 +7,8 @@ const  armando = new Permanente(
   estadoCivil = true,
   fechaNac = new Date(day = 30, month = 6, year = 1973),
   cantHijos = 3,
-  antiguedad = 10
+  antiguedad = 10,
+  salario = 0
 )
 
 const  lucia = new Temporario(
@@ -15,6 +16,7 @@ const  lucia = new Temporario(
   sueldoBasico = 6000,
   direccion = "Calle Verdadera 456",
   estadoCivil = false,
+  salario = 0,
   fechaNac = new Date(day = 15, month = 4, year = 1989),
     horasExtra = 20,
   fechaDesign = new Date(day = 1, month = 1, year = 2010)
@@ -23,10 +25,11 @@ const  lucia = new Temporario(
 const maconas = new Empresa(
   nombre = "Maconas",
   cuit = 30123456789,
-  empleados = [armando, lucia]
+  empleados = [armando, lucia],
+  recibosDeHaberes = []
 )
 
-describe "El sueldo neto de armando es: "{
+describe "Testeo de Empleado Permanente"{
    test "Sueldo Neto"{
         assert.equals(armando.sueldoNeto(), 1477.5)
     }
@@ -35,5 +38,31 @@ describe "El sueldo neto de armando es: "{
     }
     test "Retenciones"{
         assert.equals(armando.retenciones(), 572.5)
+    }
+}
+
+// mal hecho, revisar
+describe "Testeo de Empleado Temporario"{
+   test "Sueldo Neto"{
+        assert.equals(lucia.sueldoNeto(), 6900)
+    }
+    test "Sueldo Bruto"{
+        assert.equals(lucia.sueldoBruto(), 7000)
+    }
+    test "Retenciones"{
+        assert.equals(lucia.retenciones(), 100)
+    }
+}
+
+describe "Testeo de Empresa"{
+
+    test "Sueldo Total Neto"{
+        assert.equals(maconas.montoTotalSueldosNeto(), 8950)
+    }
+    test "Sueldo Total Bruto"{
+        assert.equals(maconas.montoTotalSueldosBruto(), 9050)
+    }
+    test "Retenciones Totales"{
+        assert.equals(maconas.montoTotalRetenciones(), 672.5)
     }
 }

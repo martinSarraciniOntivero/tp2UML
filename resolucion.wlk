@@ -2,6 +2,17 @@ class Empresa{
     const empleados 
     var property  nombre 
     var property cuit 
+    const recibosDeHaberes 
+    method liquidacionDeSueldos(){
+        self.pagarSueldos()
+        self.generarRecibosdeHaberes()
+    }
+    method pagarSueldos(){
+        empleados.forEach({empleado => empleado.cobrar(empleado.sueldoNeto())})
+    }
+    method generarRecibosdeHaberes(){
+       recibosDeHaberes ++ self.liquidacionEnRecibos()
+    }
     method montoTotalSueldosNeto(){
         return empleados.sum({empleado => empleado.sueldoNeto()})
     }
@@ -11,15 +22,17 @@ class Empresa{
     method montoTotalRetenciones(){
         return empleados.sum({empleado => empleado.retenciones()})
     }
-    method liquidacionPorEmpleado(){
+    method liquidacionEnRecibos(){
         return empleados.map({empleado => new ReciboDeHaberes(
             nombreEmpleado = empleado.nombre(),
             sueldoBruto = empleado.sueldoBruto(),
             direccion = empleado.direccion(),
             sueldoNeto = empleado.sueldoNeto(),
-            fechaEmision = new Date()
+            fechaEmision = new Date(),
+            informacion = empleado.desglosarInformacion()
         )})
     }
+
 }
 
 class ReciboDeHaberes{
@@ -28,7 +41,8 @@ class ReciboDeHaberes{
     var property direccion
     var property fechaEmision  
     var property sueldoNeto
-
+    var property informacion  
+    
 }
 
 class Empleado{
@@ -37,7 +51,11 @@ class Empleado{
     var property sueldoBasico 
     var property estadoCivil 
     var property fechaNac
+    var property salario  
     const hoy = new Date()
+    method cobrar(monto){
+        salario += monto
+    }
     method edad(){
         return hoy.year() - fechaNac.year() + self.losMesesCumplidos()  
     }
@@ -75,6 +93,12 @@ class Empleado{
 class Permanente inherits Empleado{
     var property cantHijos
     var property antiguedad 
+    method desglosarInformacion(){
+        return "cobra un sueldo bruto de "+self.sueldoBruto()+" por su sueldo basico de "+sueldoBasico+" y una comision extra de "+self.comisionExtra()+
+        " por tener "+cantHijos+" hijos que suma 150 c/u, "+antiguedad+" años de antiguedad que suma 50 por cada año y un estado civil "+estadoCivil+"
+         que suma 100 si es casado o 0 si es soltero. 
+         se le retiene "+self.retenciones()+" por: 10% obra social mas 20 por cada hijo y 15% aportes jubilatorios, quedando un sueldo neto de "+self.sueldoNeto()
+    }
     override method comisionExtra(){
         return self.aPorHijo() + self.aPorAntiguedad() + self.aPorEstadoCivil()
     }
@@ -108,6 +132,10 @@ class Permanente inherits Empleado{
 class Temporario inherits Empleado{
     var property horasExtra 
     var property fechaDesign   
+        method desglosarInformacion(){
+            return "cobra un sueldo bruto de "+self.sueldoBruto()+" por su sueldo basico de "+sueldoBasico+" y una comision extra de "+self.comisionExtra()+
+            " por tener "+horasExtra+" horas extra que suma 40 c/u. Se le retiene "+self.retenciones()+" por: 10% obra social mas 5 por cada hora extra y 10% aportes jubilatorios, quedando un sueldo neto de "+self.sueldoNeto()
+        }
     override method comisionExtra(){
             return self.aPorHoraExtra()
         }
