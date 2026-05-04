@@ -11,7 +11,7 @@ class Empresa{
         self.generarRecibosdeHaberes()
     }
     method pagarSueldos(){
-        empleados.forEach({empleado => empleado.cobrar(empleado.sueldoNeto())})
+       return  empleados.forEach({empleado => empleado.cobrar(empleado.sueldoNeto())})
     }
     method generarRecibosdeHaberes(){
       recibosDeHaberes += self.liquidacionEnRecibos()
