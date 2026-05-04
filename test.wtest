@@ -22,12 +22,27 @@ const  lucia = new Temporario(
   fechaDesign = new Date(day = 1, month = 1, year = 2010)
 )
 
+const marcos = new Contratado(
+  nombre = "Marcos",
+  sueldoBasico = 3000,
+  direccion = "Calle Falsa 456",
+  estadoCivil = true,
+  salario = 0,
+  fechaNac = new Date(day = 20, month = 12, year = 1990),
+  nroContrato = 12345,
+  medioDePago = "transferencia"
+
+)
+
+
+
 const maconas = new Empresa(
   nombre = "Maconas",
   cuit = 30123456789,
-  empleados = [armando, lucia],
+  empleados = [armando, lucia, marcos],
   recibosDeHaberes = []
 )
+
 
 describe "Testeo de Empleado Permanente"{
    test "Sueldo Neto"{
@@ -41,28 +56,50 @@ describe "Testeo de Empleado Permanente"{
     }
 }
 
-// mal hecho, revisar
+
 describe "Testeo de Empleado Temporario"{
    test "Sueldo Neto"{
-        assert.equals(lucia.sueldoNeto(), 6900)
+        assert.equals(lucia.sueldoNeto(), 5340)
     }
     test "Sueldo Bruto"{
-        assert.equals(lucia.sueldoBruto(), 7000)
+        assert.equals(lucia.sueldoBruto(), 6800)
     }
     test "Retenciones"{
-        assert.equals(lucia.retenciones(), 100)
+        assert.equals(lucia.retenciones(), 1460)
+    }
+}
+
+describe "Testeo de Empleado Contratado"{
+   
+   test "Sueldo Neto"{
+        assert.equals(marcos.sueldoNeto(), 2950)
+    }
+    test "Sueldo Bruto"{
+        assert.equals(marcos.sueldoBruto(), 3000)
+    }
+    test "Retenciones"{
+        assert.equals(marcos.retenciones(), 50)
     }
 }
 
 describe "Testeo de Empresa"{
 
     test "Sueldo Total Neto"{
-        assert.equals(maconas.montoTotalSueldosNeto(), 8950)
+        assert.equals(maconas.montoTotalSueldosNeto(), 9767.5)
     }
     test "Sueldo Total Bruto"{
-        assert.equals(maconas.montoTotalSueldosBruto(), 9050)
+        assert.equals(maconas.montoTotalSueldosBruto(), 11850)
     }
     test "Retenciones Totales"{
-        assert.equals(maconas.montoTotalRetenciones(), 672.5)
+        assert.equals(maconas.montoTotalRetenciones(), 2082.5)
     }
+    test "liquidacion en sueldos"{
+      maconas.liquidacionDeSueldos()
+      assert.equals(maconas.recibosDeHaberes().size(), 3)
+      assert.equals(armando.salario(), 1477.5)
+      assert.equals(lucia.salario(), 5340)
+      assert.equals(marcos.salario(), 2950)
+    }
+
+
 }
