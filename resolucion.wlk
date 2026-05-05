@@ -8,12 +8,12 @@ class Empresa{
     }
     method liquidacionDeSueldos(){
         self.pagarSueldos()
-        self.generarRecibosdeHaberes()
+        self.guardarRecibosdeHaberes()
     }
     method pagarSueldos(){
        return  empleados.forEach({empleado => empleado.cobrar(empleado.sueldoNeto())})
     }
-    method generarRecibosdeHaberes(){
+    method guardarRecibosdeHaberes(){
       recibosDeHaberes += self.liquidacionEnRecibos()
       
     }
