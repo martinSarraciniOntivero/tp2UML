@@ -33,9 +33,15 @@ class Empresa{
             direccion = empleado.direccion(),
             sueldoNeto = empleado.sueldoNeto(),
             fechaEmision = new Date(),
-            informacion = empleado.desglosarInformacion()
+            conceptos = empleado.desglosarInformacion()
         )})
     }
+
+}
+
+class Concepto{
+    var property descripcion
+    var property monto
 
 }
 
@@ -45,7 +51,7 @@ class ReciboDeHaberes{
     var property direccion
     var property fechaEmision  
     var property sueldoNeto
-    var property informacion  
+    var property conceptos  
 
 }
 
@@ -99,10 +105,14 @@ class Permanente inherits Empleado{
     var property cantHijos
     var property antiguedad 
     override method desglosarInformacion(){
-        return "cobra un sueldo bruto de "+self.sueldoBruto()+" por su sueldo basico de "+sueldoBasico+" y una comision extra de "+self.comisionExtra()+
-        " por tener "+cantHijos+" hijos que suma 150 c/u, "+antiguedad+" años de antiguedad que suma 50 por cada año y un estado civil "+estadoCivil+"
-         que suma 100 si es casado o 0 si es soltero. 
-         se le retiene "+self.retenciones()+" por: 10% obra social mas 20 por cada hijo y 15% aportes jubilatorios, quedando un sueldo neto de "+self.sueldoNeto()
+        const conceptos = []
+        conceptos.add(new Concepto(descripcion = "Sueldo Básico", monto = sueldoBasico))
+        conceptos.add(new Concepto(descripcion = "Asignación por hijo", monto = self.aPorHijo()))
+        conceptos.add(new Concepto(descripcion = "Asignación por cónyuge", monto = self.aPorEstadoCivil()))
+        conceptos.add(new Concepto(descripcion = "Antigüedad", monto = self.aPorAntiguedad()))
+        conceptos.add(new Concepto(descripcion = "Obra Social (descuento)", monto = self.obraSocial() * -1))
+        conceptos.add(new Concepto(descripcion = "Aportes Jubilatorios (descuento)", monto = self.aportesJubilatorios() * -1))
+        return conceptos
     }
     override method comisionExtra(){
         return self.aPorHijo() + self.aPorAntiguedad() + self.aPorEstadoCivil()
@@ -137,13 +147,17 @@ class Permanente inherits Empleado{
 class Temporario inherits Empleado{
     var property horasExtra 
     var property fechaDesign   
-        override method desglosarInformacion(){
-            return "cobra un sueldo bruto de "+self.sueldoBruto()+" por su sueldo basico de "+sueldoBasico+" y una comision extra de "+self.comisionExtra()+
-            " por tener "+horasExtra+" horas extra que suma 40 c/u. Se le retiene "+self.retenciones()+" por: 10% obra social mas 5 por cada hora extra y 10% aportes jubilatorios, quedando un sueldo neto de "+self.sueldoNeto()
-        }
+    override method desglosarInformacion(){
+        const conceptos = []
+        conceptos.add(new Concepto(descripcion = "Sueldo Básico", monto = sueldoBasico))
+        conceptos.add(new Concepto(descripcion = "Horas Extras", monto = self.aPorHoraExtra()))
+        conceptos.add(new Concepto(descripcion = "Obra Social (descuento)", monto = self.obraSocial() * -1))
+        conceptos.add(new Concepto(descripcion = "Aportes Jubilatorios (descuento)", monto = self.aportesJubilatorios() * -1))
+        return conceptos
+    }
     override method comisionExtra(){
-            return self.aPorHoraExtra()
-        }
+        return self.aPorHoraExtra()
+    }
     method aPorHoraExtra(){
         return horasExtra * 40
     }
@@ -175,7 +189,10 @@ class Contratado inherits Empleado{
         return 50
     }  
     override method desglosarInformacion(){
-        return "cobra un sueldo bruto de "+self.sueldoBruto()+" por su sueldo basico de "+sueldoBasico+". Se le retiene un monto fijo de 50, quedando un sueldo neto de "+self.sueldoNeto()
+        const conceptos = []
+        conceptos.add(new Concepto(descripcion = "Sueldo Básico", monto = sueldoBasico))
+        conceptos.add(new Concepto(descripcion = "Gastos Administrativos Contractuales (descuento)", monto = -50))
+        return conceptos
     }
     override method obraSocial(){
         return 0
