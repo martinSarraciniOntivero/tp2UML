@@ -28,12 +28,12 @@ class Empresa{
     }
     method liquidacionEnRecibos(){
         return empleados.map({empleado => new ReciboDeHaberes(
+            empleado = empleado,
             nombreEmpleado = empleado.nombre(),
             sueldoBruto = empleado.sueldoBruto(),
             direccion = empleado.direccion(),
             sueldoNeto = empleado.sueldoNeto(),
-            fechaEmision = new Date(),
-            conceptos = empleado.desglosarInformacion()
+            fechaEmision = new Date()
         )})
     }
 
@@ -42,17 +42,23 @@ class Empresa{
 class Concepto{
     var property descripcion
     var property monto
-
 }
 
 class ReciboDeHaberes{
+    var property empleado  
     var property nombreEmpleado
     var property sueldoBruto
     var property direccion
     var property fechaEmision  
     var property sueldoNeto
-    var property conceptos  
-
+    var property conceptos = self.generarConceptos(empleado)
+    method generarConceptos(trabajador){
+        const renglones = []
+        renglones.add(new Concepto(descripcion = "Sueldo Bruto", monto = trabajador.sueldoBruto()))
+        renglones.add(new Concepto(descripcion = "Sueldo Neto", monto = trabajador.sueldoNeto()))
+        renglones.add(new Concepto(descripcion = "Retenciones", monto = trabajador.retenciones()))  
+        return renglones
+    }
 }
 
 class Empleado{
@@ -97,23 +103,13 @@ class Empleado{
     method sueldoNeto(){
         return self.sueldoBruto() - self.retenciones()
     }
-    method desglosarInformacion()
 
 }
 
 class Permanente inherits Empleado{
     var property cantHijos
     var property antiguedad 
-    override method desglosarInformacion(){
-        const conceptos = []
-        conceptos.add(new Concepto(descripcion = "Sueldo Básico", monto = sueldoBasico))
-        conceptos.add(new Concepto(descripcion = "Asignación por hijo", monto = self.aPorHijo()))
-        conceptos.add(new Concepto(descripcion = "Asignación por cónyuge", monto = self.aPorEstadoCivil()))
-        conceptos.add(new Concepto(descripcion = "Antigüedad", monto = self.aPorAntiguedad()))
-        conceptos.add(new Concepto(descripcion = "Obra Social (descuento)", monto = self.obraSocial() * -1))
-        conceptos.add(new Concepto(descripcion = "Aportes Jubilatorios (descuento)", monto = self.aportesJubilatorios() * -1))
-        return conceptos
-    }
+   
     override method comisionExtra(){
         return self.aPorHijo() + self.aPorAntiguedad() + self.aPorEstadoCivil()
     }
@@ -147,14 +143,7 @@ class Permanente inherits Empleado{
 class Temporario inherits Empleado{
     var property horasExtra 
     var property fechaDesign   
-    override method desglosarInformacion(){
-        const conceptos = []
-        conceptos.add(new Concepto(descripcion = "Sueldo Básico", monto = sueldoBasico))
-        conceptos.add(new Concepto(descripcion = "Horas Extras", monto = self.aPorHoraExtra()))
-        conceptos.add(new Concepto(descripcion = "Obra Social (descuento)", monto = self.obraSocial() * -1))
-        conceptos.add(new Concepto(descripcion = "Aportes Jubilatorios (descuento)", monto = self.aportesJubilatorios() * -1))
-        return conceptos
-    }
+    
     override method comisionExtra(){
         return self.aPorHoraExtra()
     }
@@ -188,12 +177,7 @@ class Contratado inherits Empleado{
     override method retenciones(){
         return 50
     }  
-    override method desglosarInformacion(){
-        const conceptos = []
-        conceptos.add(new Concepto(descripcion = "Sueldo Básico", monto = sueldoBasico))
-        conceptos.add(new Concepto(descripcion = "Gastos Administrativos Contractuales (descuento)", monto = -50))
-        return conceptos
-    }
+    
     override method obraSocial(){
         return 0
     }
